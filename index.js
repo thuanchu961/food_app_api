@@ -6,6 +6,7 @@ import cartRoutes from './routes/cartRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import favoriteRoutes from './routes/favoriteRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import storeRoutes from './routes/storeRoutes.js'
 import cors from 'cors'
 import 'dotenv/config'
 
@@ -21,6 +22,7 @@ app.use('/carts', cartRoutes)
 app.use('/orders', orderRoutes)
 app.use('/favorite', favoriteRoutes)
 app.use('/admins', adminRoutes) //đã sửa
+app.use('/stores', storeRoutes) //đã sửa
 
 app.listen(5000, () => {
   console.log('Server running on port 5000')
