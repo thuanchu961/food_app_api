@@ -1,12 +1,15 @@
 import pool from '../database/index.js'
 
 export const getAllStores = async (req, res) => {
-    const { page, pageSize } = req.query
+    const { type, page, pageSize } = req.query
     const offset = (page - 1) * pageSize
 
     let queryString = `SELECT * FROM store`
     if (page && pageSize)
         queryString = queryString.concat(` OFFSET ${offset} LIMIT ${pageSize}`)
+    else if(type){
+        queryString = `SELECT * FROM store WHERE store_type = '${type}'`
+    }
 
     const totalQuery = `SELECT COUNT(*) FROM store`
 

@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get('/getAllStores', getAllStores)
+router.get('/getAllStores/', getAllStores)
 router.get('/getStore/:storeid', getStore)
 
 router.post('/add', addStore)
