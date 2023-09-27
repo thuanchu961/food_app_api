@@ -22,6 +22,6 @@ app.use('/admins', adminRoutes) //đã sửa
 app.use('/stores', storeRoutes) //đã sửa
 app.use('/products', productRoutes) //đã sửa
 
-app.listen(5000, () => {
-  console.log('Server running on port 5000')
+app.listen(5432, () => {
+  console.log('Server running on port 5432')
 })
