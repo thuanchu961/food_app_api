@@ -1,7 +1,7 @@
 import pool from '../database/index.js'
-
+//đã sửa
 export const signup = async (req, res) => {
-  const { fullname, email, password } = req.body
+  const { username, password, email, fullname } = req.body
   try {
     const checkExisted = await pool.query(
       `SELECT * FROM users WHERE email = '${email}'`,
@@ -10,8 +10,8 @@ export const signup = async (req, res) => {
       res.status(400).json({ message: 'Email existed!' })
     else {
       await pool.query(
-        `INSERT INTO users (fullname, email, password) 
-        VALUES ('${fullname}', '${email}', '${password}')`,
+        `INSERT INTO users (username, password, email, fullname)
+        VALUES ('${username}', '${password}', '${email}', '${fullname}')`,
       )
       res.status(200).json({ message: 'Signup successfully' })
     }
@@ -19,7 +19,7 @@ export const signup = async (req, res) => {
     res.status(500).json({ error })
   }
 }
-
+//đã sửa
 export const signin = async (req, res) => {
   const { email, password } = req.body
   try {
@@ -35,7 +35,7 @@ export const signin = async (req, res) => {
     res.status(500).json({ error })
   }
 }
-
+//đã sửa
 export const getAllUsers = async (req, res) => {
   const { page, pageSize } = req.query
   const offset = (page - 1) * pageSize
@@ -57,21 +57,21 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error })
   }
 }
-
+//đã sửa
 export const updateUser = async (req, res) => {
   const { userid } = req.params
-  const { fullname, dateofbirth, gender, phone, email } = req.body
+  const { fullname, dateofbirth, gender, phone, address } = req.body
 
   try {
     const result = await pool.query(
       `UPDATE users
       SET
         fullname = '${fullname}',
-        dateofbirth = '${dateofbirth}',
+        dob = '${dateofbirth}',
         gender = '${gender}',
         phone = '${phone}',
-        email = '${email}'
-      WHERE userid = '${userid}'
+        address = '${address}',
+      WHERE user_id = '${userid}'
       RETURNING *`,
     )
 
@@ -80,7 +80,7 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error })
   }
 }
-
+//đã sửa
 export const updateAddress = async (req, res) => {
   const { userid } = req.params
   const { address } = req.body
@@ -90,7 +90,7 @@ export const updateAddress = async (req, res) => {
       `UPDATE users
       SET
         address = '${address}'
-      WHERE userid = '${userid}'
+      WHERE user_id = '${userid}'
       RETURNING *`,
     )
 
