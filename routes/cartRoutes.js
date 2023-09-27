@@ -9,10 +9,10 @@ const router = express.Router()
 
 router.post('/add', addToCart)
 
-router.put('/:id', updateCartItem)
+router.put('/update/:id', updateCartItem)
 
 router.delete('/:id', deleteCartItem)
 
-router.get('/get', getCartItems)
+router.get('/getCartItems', getCartItems)
 
 export default router

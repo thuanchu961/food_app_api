@@ -1,13 +1,13 @@
 import pool from '../database/index.js'
 
 export const addToCart = async (req, res) => {
-  const { userid, plantid, quantity } = req.body
+  const { userid, productid, quantity } = req.body
   try {
     await pool.query(
-      `INSERT INTO cart (userid, plantid, quantity) VALUES ('${userid}', '${plantid}', '${quantity}')`,
+      `INSERT INTO cart (user_id, product_id, quantity) VALUES ('${userid}', '${productid}', '${quantity}')`,
     )
 
-    res.status(200).json({ message: 'Add successfully' })
+    res.status(200).json({ message: 'Add to cart successfully' })
   } catch (error) {
     res.status(500).json({ error })
   }
@@ -17,7 +17,7 @@ export const getCartItems = async (req, res) => {
   const { userid } = req.query
   try {
     const result = await pool.query(
-      `SELECT * FROM (SELECT * FROM cart WHERE userid = '${userid}') AS a LEFT JOIN plants ON a.plantid = plants.plantid`,
+      `SELECT * FROM (SELECT * FROM cart WHERE user_id = '${userid}') AS a LEFT JOIN product ON a.product_id = product.product_id`,
     )
 
     res.status(200).json({ data: result.rows })
@@ -31,8 +31,8 @@ export const deleteCartItem = async (req, res) => {
 
   try {
     await pool.query(
-      `DELETE FROM cart 
-      WHERE cartitemid = '${id}'`,
+      `DELETE FROM cart
+      WHERE id = '${id}'`,
     )
     res.status(200).json({ message: 'Delete successfully' })
   } catch (error) {
@@ -46,9 +46,9 @@ export const updateCartItem = async (req, res) => {
 
   try {
     await pool.query(
-      `UPDATE cart 
+      `UPDATE cart
       SET quantity = '${quantity}'
-      WHERE cartitemid = '${id}'`,
+      WHERE id = '${id}'`,
     )
     res.status(200).json({ message: 'Update successfully' })
   } catch (error) {

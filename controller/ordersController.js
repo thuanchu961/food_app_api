@@ -4,17 +4,17 @@ export const order = async (req, res) => {
   const { userid, products } = req.body
   try {
     const order = await pool.query(
-      `INSERT INTO orders (userid) VALUES ('${userid}') RETURNING orderid`,
+      `INSERT INTO orders (user_id) VALUES ('${userid}') RETURNING order_id`,
     )
-    const orderid = order.rows[0].orderid
+    const orderid = order.rows[0].order_id
 
     products.map(async (product) => {
       await pool.query(
-        `INSERT INTO orderdetail (orderid, plantid, quantity, price) VALUES ('${orderid}', '${product.plantid}', '${product.quantity}', '${product.price}')`,
+        `INSERT INTO order_details (order_id, product_id, quantity) VALUES ('${orderid}', '${product.product_id}', '${product.quantity}')`,
       )
     })
 
-    await pool.query(`DELETE FROM cart WHERE userid = '${userid}'`)
+    await pool.query(`DELETE FROM cart WHERE user_id = '${userid}'`)
 
     res.status(200).json({ message: 'Order successfully' })
   } catch (error) {
@@ -26,11 +26,11 @@ export const getAllOrders = async (req, res) => {
   const { page, pageSize } = req.query
   const offset = (page - 1) * pageSize
 
-  let queryString = `SELECT * FROM orders INNER JOIN users ON orders.userid = users.userid`
+  let queryString = `SELECT * FROM orders INNER JOIN users ON orders.user_id = users.user_id`
   if (page && pageSize)
     queryString = queryString.concat(` OFFSET ${offset} LIMIT ${pageSize}`)
 
-  const totalQuery = `SELECT COUNT(*) FROM orders INNER JOIN users ON orders.userid = users.userid`
+  const totalQuery = `SELECT COUNT(*) FROM orders INNER JOIN users ON orders.user_id = users.user_id`
 
   try {
     const result = await pool.query(queryString)
@@ -49,7 +49,7 @@ export const getOrdersByUserId = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT * FROM orders WHERE userid = '${userid}' AND status = '${status}'`,
+      `SELECT * FROM orders WHERE user_id = '${userid}' AND status = '${status}'`,
     )
 
     res.status(200).json({ data: result.rows })
@@ -63,7 +63,7 @@ export const getOrderDetail = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT *, a.price AS orderprice FROM (SELECT * FROM orderdetail WHERE orderid = '${orderid}') AS a LEFT JOIN plants ON a.plantid = plants.plantid`,
+      `SELECT *, a.price AS orderprice FROM (SELECT * FROM order_details WHERE order_id = '${orderid}') AS a LEFT JOIN product ON a.product_id = product.product_id`,
     )
 
     res.status(200).json({ data: result.rows })
@@ -80,7 +80,7 @@ export const changeStatus = async (req, res) => {
     await pool.query(
       `UPDATE orders
       SET status = '${status}'
-      WHERE orderid = '${orderid}'`,
+      WHERE order_id = '${orderid}'`,
     )
 
     res.status(200).json({ message: 'Change successfully' })
