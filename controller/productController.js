@@ -25,6 +25,30 @@ export const getAllProducts = async (req, res) => {
     }
 }
 
+export const searchProducts = async (req, res) => {
+    const { name } = req.params
+
+    let queryString = `SELECT * FROM product`
+
+    if(name){
+        queryString = `SELECT * FROM product
+        WHERE product_name LIKE '%'${name}'%'`
+    }
+
+    const totalQuery = `SELECT COUNT(*) FROM product`
+
+    try {
+        const result = await pool.query(queryString)
+        const total = await pool.query(totalQuery)
+
+        res
+            .status(200)
+            .json({ data: result.rows, total: parseInt(total.rows[0].count) })
+    } catch (error) {
+        res.status(500).json({ error })
+    }
+}
+
 export const getProduct = async (req, res) => {
     const { productid } = req.params
     let query = `SELECT * FROM product WHERE product_id = '${productid}'`
