@@ -63,7 +63,10 @@ export const getOrderDetail = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT *, a.price AS orderprice FROM (SELECT * FROM order_details WHERE order_id = '${orderid}') AS a LEFT JOIN product ON a.product_id = product.product_id`,
+      `SELECT od.*, p.*
+      FROM order_details od
+      INNER JOIN product p ON od.product_id = p.product_id
+      WHERE od.order_id = '${orderid}'`,
     )
 
     res.status(200).json({ data: result.rows })
