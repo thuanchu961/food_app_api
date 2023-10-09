@@ -70,15 +70,16 @@ export const addStore = async (req, res) => {
         avatar,
         address,
         phone,
+        rate,
         time_open,
         time_close,
         type
     } = req.body
     try {
         await pool.query(
-            `INSERT INTO store (store_name, avatar, address, phone, time_open, time_close, store_type)
+            `INSERT INTO store (store_name, avatar, address, phone, rate, time_open, time_close, store_type)
           VALUES
-            ('${name}', '${avatar}', '${address}', '${phone}', '${time_open}', '${time_close}', '${type}' )`,
+            ('${name}', '${avatar}', '${address}', '${phone}', '${rate}', '${time_open}', '${time_close}', ${type} )`,
         )
         res.status(200).json({ message: 'Add store successfully' })
     } catch (error) {

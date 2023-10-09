@@ -4,13 +4,13 @@ export const order = async (req, res) => {
   const { userid, products } = req.body
   try {
     const order = await pool.query(
-      `INSERT INTO orders (user_id) VALUES ('${userid}') RETURNING order_id`,
+      `INSERT INTO orders (user_id, status) VALUES ('${userid}', '0') RETURNING order_id`,
     )
     const orderid = order.rows[0].order_id
 
     products.map(async (product) => {
       await pool.query(
-        `INSERT INTO order_details (order_id, product_id, quantity) VALUES ('${orderid}', '${product.product_id}', '${product.quantity}')`,
+        `INSERT INTO order_details (order_id, product_id, quantity) VALUES ('${orderid}', '${product.product_id}', '${product.quantity}', '${product.price}')`,
       )
     })
 
