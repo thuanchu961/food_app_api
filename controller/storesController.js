@@ -33,7 +33,7 @@ export const searchStores = async (req, res) => {
         queryString = `SELECT s.*
         FROM product p
         INNER JOIN store s ON p.store_id = s.store_id
-        WHERE p.product_name LIKE '%'${name}'%'
+        WHERE p.product_name LIKE '%${name}%'
         GROUP BY s.store_id
         HAVING COUNT(*) > 1`
     }
@@ -70,16 +70,15 @@ export const addStore = async (req, res) => {
         avatar,
         address,
         phone,
-        rate,
         time_open,
         time_close,
         type
     } = req.body
     try {
         await pool.query(
-            `INSERT INTO store (store_name, avatar, address, phone, rate, time_open, time_close, store_type)
+            `INSERT INTO store (store_name, avatar, address, phone, time_open, time_close, store_type)
           VALUES
-            ('${name}', '${avatar}', '${address}', '${phone}', '${rate}', '${time_open}', '${time_close}', '${type}', )`,
+            ('${name}', '${avatar}', '${address}', '${phone}', '${time_open}', '${time_close}', '${type}' )`,
         )
         res.status(200).json({ message: 'Add store successfully' })
     } catch (error) {

@@ -1,7 +1,7 @@
 import pool from '../database/index.js'
 //đã sửa
 export const signup = async (req, res) => {
-  const { username, password, email, fullname } = req.body
+  const { username, password, email, fullname, gender, dateofbirth, phone } = req.body
   try {
     const checkExisted = await pool.query(
       `SELECT * FROM users WHERE email = '${email}'`,
@@ -10,8 +10,8 @@ export const signup = async (req, res) => {
       res.status(400).json({ message: 'Email existed!' })
     else {
       await pool.query(
-        `INSERT INTO users (username, password, email, fullname)
-        VALUES ('${username}', '${password}', '${email}', '${fullname}')`,
+        `INSERT INTO users (username, password, email, fullname, gender, dob, phone)
+        VALUES ('${username}', '${password}', '${email}', '${fullname}', '${gender}', '${dateofbirth}', '${phone}')`,
       )
       res.status(200).json({ message: 'Signup successfully' })
     }
@@ -67,10 +67,10 @@ export const updateUser = async (req, res) => {
       `UPDATE users
       SET
         fullname = '${fullname}',
-        dob = '${dateofbirth}',
+        dob = TO_DATE('${dateofbirth}', 'YYYY-MM-DD'),
         gender = '${gender}',
         phone = '${phone}',
-        address = '${address}',
+        address = '${address}'
       WHERE user_id = '${userid}'
       RETURNING *`,
     )

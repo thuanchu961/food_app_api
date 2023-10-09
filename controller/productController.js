@@ -32,7 +32,7 @@ export const searchProducts = async (req, res) => {
 
     if(name){
         queryString = `SELECT * FROM product
-        WHERE product_name LIKE '%'${name}'%'`
+        WHERE product_name LIKE '%${name}%'`
     }
 
     const totalQuery = `SELECT COUNT(*) FROM product`
