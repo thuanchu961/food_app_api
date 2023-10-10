@@ -60,7 +60,7 @@ export const getAllUsers = async (req, res) => {
 //đã sửa
 export const updateUser = async (req, res) => {
   const { userid } = req.params
-  const { fullname, dateofbirth, gender, phone, address } = req.body
+  const { fullname, gender, dateofbirth, phone, address } = req.body
 
   try {
     const result = await pool.query(
@@ -71,7 +71,7 @@ export const updateUser = async (req, res) => {
         gender = '${gender}',
         phone = '${phone}',
         address = '${address}'
-      WHERE user_id = '${userid}'
+      WHERE user_id = ${userid}
       RETURNING *`,
     )
 

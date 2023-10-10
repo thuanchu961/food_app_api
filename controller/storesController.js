@@ -66,20 +66,20 @@ export const getStore = async (req, res) => {
 
 export const addStore = async (req, res) => {
     const {
-        name,
+        store_name,
         avatar,
         address,
         phone,
         rate,
         time_open,
         time_close,
-        type
+        store_type
     } = req.body
     try {
         await pool.query(
             `INSERT INTO store (store_name, avatar, address, phone, rate, time_open, time_close, store_type)
           VALUES
-            ('${name}', '${avatar}', '${address}', '${phone}', '${rate}', '${time_open}', '${time_close}', ${type} )`,
+            ('${store_name}', '${avatar}', '${address}', '${phone}', '${rate}', '${time_open}', '${time_close}', ${store_type} )`,
         )
         res.status(200).json({ message: 'Add store successfully' })
     } catch (error) {
@@ -90,28 +90,28 @@ export const addStore = async (req, res) => {
 export const editStore = async (req, res) => {
     const { storeid } = req.params
     const {
-        name,
+        store_name,
         avatar,
         address,
         phone,
         rate,
         time_open,
         time_close,
-        type
+        store_type
     } = req.body
 
     try {
         await pool.query(
             `UPDATE store
         SET
-          store_name = '${name}',
+          store_name = '${store_name}',
           avatar = '${avatar}',
           address = '${address}',
           phone = '${phone}',
           rate = '${rate}',
           time_open = '${time_open}',
           time_close = '${time_close}',
-          store_type = '${type}'
+          store_type = '${store_type}'
         WHERE store_id = '${storeid}'`,
         )
         res.status(200).json({ message: 'Edit store successfully' })

@@ -63,21 +63,21 @@ export const getProduct = async (req, res) => {
 
 export const addProduct = async (req, res) => {
     const {
-        name,
-        storeid,
+        product_name,
+        store_id,
         avatar,
         size,
         price,
         discount,
         status,
         rate,
-        desc
+        description
     } = req.body
     try {
         await pool.query(
             `INSERT INTO product (product_name, store_id, avatar, size, price, discount, status, rate, description)
           VALUES
-            ('${name}', '${storeid}', '${avatar}', '${size}', '${price}', '${discount}', '${status}', '${rate}', '${desc}')`,
+            ('${product_name}', '${store_id}', '${avatar}', '${size}', '${price}', '${discount}', '${status}', '${rate}', '${description}')`,
         )
         res.status(200).json({ message: 'Add product successfully' })
     } catch (error) {
@@ -88,28 +88,28 @@ export const addProduct = async (req, res) => {
 export const editProduct = async (req, res) => {
     const { productid } = req.params
     const {
-        name,
+        product_name,
         avatar,
         size,
         price,
         discount,
         status,
         rate,
-        desc
+        description
     } = req.body
 
     try {
         await pool.query(
             `UPDATE product
         SET
-          product_name = '${name}',
+          product_name = '${product_name}',
           avatar = '${avatar}',
           size = '${size}',
           price = '${price}',
           rate = '${rate}',
           discount = '${discount}',
           status = '${status}',
-          description = '${desc}'
+          description = '${description}'
         WHERE product_id = '${productid}'`,
         )
         res.status(200).json({ message: 'Edit product successfully' })
