@@ -11,7 +11,7 @@ router.post('/add', addToCart)
 
 router.put('/update/:id', updateCartItem)
 
-router.delete('/:id', deleteCartItem)
+router.delete('/delete/:id', deleteCartItem)
 
 router.get('/getCartItems', getCartItems)
 
