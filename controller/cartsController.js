@@ -3,11 +3,22 @@ import pool from '../database/index.js'
 export const addToCart = async (req, res) => {
   const { userid, productid, quantity } = req.body
   try {
-    await pool.query(
-      `INSERT INTO cart (user_id, product_id, quantity) VALUES ('${userid}', '${productid}', '${quantity}')`,
+    const checkExisted = await pool.query(
+      `SELECT * FROM cart WHERE product_id = ${productid} AND user_id = ${userid}`,
     )
+    if(checkExisted.rows.length > 0){
+      const cartId = checkExisted.rows[0].id;
+      await pool.query(
+        `UPDATE cart SET quantity = quantity + 1 WHERE id = ${cartId}`,
+      )
+      res.status(200).json({ message: 'Update quantity + 1 successfully' })
+    }else{
+      await pool.query(
+        `INSERT INTO cart (user_id, product_id, quantity) VALUES (${userid}, ${productid}, ${quantity})`,
+      )
+      res.status(200).json({ message: 'Add to cart successfully' })
+    }
 
-    res.status(200).json({ message: 'Add to cart successfully' })
   } catch (error) {
     res.status(500).json({ error })
   }
