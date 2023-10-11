@@ -28,7 +28,7 @@ export const getCartItems = async (req, res) => {
   const { userid } = req.query
   try {
     const result = await pool.query(
-      `SELECT a.*, p.*, s.store_name
+      `SELECT a.*, p.*, s.store_name, s.address
       FROM (
         SELECT *
         FROM cart

@@ -1,10 +1,10 @@
 import pool from '../database/index.js'
 
 export const order = async (req, res) => {
-  const { userid, products } = req.body
+  const { userid, products, total_price } = req.body
   try {
     const order = await pool.query(
-      `INSERT INTO orders (user_id, status) VALUES ('${userid}', '0') RETURNING order_id`,
+      `INSERT INTO orders (user_id, status, total_price) VALUES ('${userid}', '0', '${total_price}') RETURNING order_id`,
     )
     const orderid = order.rows[0].order_id
 
