@@ -13,7 +13,7 @@ router.get('/getall', getAllOrders)
 router.get('/detail/:orderid', getOrderDetail)
 
 router.post('/add', order)
-router.post('/getbyuserid', getOrdersByUserId)
+router.get('/getorderbyuserid/:userid', getOrdersByUserId)
 router.post('/getdetailbyuserid', getDetailByUserId)
 
 router.put('/update/status/:orderid', changeStatus)

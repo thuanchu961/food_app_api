@@ -48,11 +48,11 @@ export const getAllOrders = async (req, res) => {
 }
 
 export const getOrdersByUserId = async (req, res) => {
-  const { userid, status } = req.body
+  const { userid } = req.params
 
   try {
     const result = await pool.query(
-      `SELECT * FROM orders WHERE user_id = '${userid}' AND status = '${status}'`,
+      `SELECT * FROM orders WHERE user_id = '${userid}'`,
     )
 
     res.status(200).json({ data: result.rows })
