@@ -9,7 +9,7 @@ export const addToCart = async (req, res) => {
     if(checkExisted.rows.length > 0){
       const cartId = checkExisted.rows[0].id;
       await pool.query(
-        `UPDATE cart SET quantity = quantity + ${quantity} WHERE id = ${cartId}`,
+        `UPDATE cart SET quantity = quantity + ${quantity} WHERE cart_id = ${cartId}`,
       )
       res.status(200).json({ message: 'Update quantity  successfully' })
     }else{
@@ -45,12 +45,12 @@ export const getCartItems = async (req, res) => {
 }
 
 export const deleteCartItem = async (req, res) => {
-  const { id } = req.params
+  const { cart_id } = req.params
 
   try {
     await pool.query(
       `DELETE FROM cart
-      WHERE id = ${id}`,
+      WHERE cart_id = ${cart_id}`,
     )
     res.status(200).json({ message: 'Delete successfully' })
   } catch (error) {
@@ -59,15 +59,20 @@ export const deleteCartItem = async (req, res) => {
 }
 
 export const updateCartItem = async (req, res) => {
-  const { id } = req.params
-  const { quantity } = req.body
+  const { cart_id, quantity } = req.body
 
   try {
-    await pool.query(
-      `UPDATE cart
-      SET quantity = ${quantity}
-      WHERE id = ${id}`,
-    )
+    const checkExisted = await pool.query(`SELECT * FROM cart WHERE id = ${cart_id}`)
+    if(checkExisted.rows.length == 0){
+      res.status(200).json({ message: 'Not existed cart id' })
+    }else{
+      await pool.query(
+        `UPDATE cart
+        SET quantity = ${quantity}
+        WHERE cart_id = ${cart_id}`,
+      )
+    }
+
     res.status(200).json({ message: 'Update successfully' })
   } catch (error) {
     res.status(500).json({ error })

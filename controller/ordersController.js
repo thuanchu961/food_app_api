@@ -26,12 +26,9 @@ export const order = async (req, res) => {
 }
 
 export const getAllOrders = async (req, res) => {
-  const { page, pageSize } = req.query
-  const offset = (page - 1) * pageSize
-
+  
   let queryString = `SELECT * FROM orders INNER JOIN users ON orders.user_id = users.user_id`
-  if (page && pageSize)
-    queryString = queryString.concat(` OFFSET ${offset} LIMIT ${pageSize}`)
+
 
   const totalQuery = `SELECT COUNT(*) FROM orders INNER JOIN users ON orders.user_id = users.user_id`
 
