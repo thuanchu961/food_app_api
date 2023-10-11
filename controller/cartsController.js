@@ -62,7 +62,7 @@ export const updateCartItem = async (req, res) => {
   const { cart_id, quantity } = req.body
 
   try {
-    const checkExisted = await pool.query(`SELECT * FROM cart WHERE id = ${cart_id}`)
+    const checkExisted = await pool.query(`SELECT * FROM cart WHERE cart_id = ${cart_id}`)
     if(checkExisted.rows.length == 0){
       res.status(200).json({ message: 'Not existed cart id' })
     }else{

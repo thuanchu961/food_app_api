@@ -2,22 +2,21 @@ import pool from '../database/index.js'
 
 export const order = async (req, res) => {
   const { userid, products, total_price, store_name } = req.body
+
   try {
     const order = await pool.query(
       `INSERT INTO orders (user_id, status, total_price, store_name) VALUES ('${userid}', '0', '${total_price}', '${store_name}') RETURNING order_id`,
     )
     const orderid = order.rows[0].order_id
 
-    // products.map(async (product) => {
-
-    // })
     for(const product of products){
       await pool.query(
         `INSERT INTO order_details (order_id, product_id, quantity, price) VALUES ('${orderid}', '${product.product_id}', '${product.quantity}', '${product.price}')`,
       )
-    }
+      // const cartid = await pool.query(`SELECT cart_id FROM cart WHERE user_id = ${userid} AND product_id = ${product.product_id}`,)
 
-    await pool.query(`DELETE FROM cart WHERE user_id = '${userid}'`)
+       await pool.query(`DELETE FROM cart WHERE user_id = ${userid} AND product_id = ${product.product_id}`,)
+    }
 
     res.status(200).json({ message: 'Order successfully' })
   } catch (error) {
