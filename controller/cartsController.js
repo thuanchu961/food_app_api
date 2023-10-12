@@ -7,7 +7,7 @@ export const addToCart = async (req, res) => {
       `SELECT * FROM cart WHERE product_id = ${productid} AND user_id = ${userid}`,
     )
     if(checkExisted.rows.length > 0){
-      const cartId = checkExisted.rows[0].id;
+      const cartId = checkExisted.rows[0].cart_id;
       await pool.query(
         `UPDATE cart SET quantity = quantity + ${quantity} WHERE cart_id = ${cartId}`,
       )
