@@ -1,5 +1,5 @@
 {
-  "name": "selling-plants-api",
+  "name": "food-app-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-  "author": "ngothuan",
+  "author": "quangthuan",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",

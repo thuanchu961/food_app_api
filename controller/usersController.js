@@ -1,18 +1,19 @@
 import e from 'express';
 import pool from '../database/index.js'
-import crypto from 'crypto'; 
+import crypto from 'crypto';
+import { decodeToken, generateToken } from '../auth/authMethod.js'
 
 const salt = 'thuantoandungnhom3monbaomat!@#$%';
-const AESKey = 'ngay10/03/2001langaygiotohangnam' ;  //256-bit 32 ký tự 
+const AESKey = 'ngay10/03/2001langaygiotohangnam' ;  //256-bit 32 ký tự
 const AESIv = '1234567890121416' ; // 12 ký tự
 //đã sửa
 export const signup = async (req, res) => {
   let { username, password, email, fullname, gender, dateofbirth, phone } = req.body;
   password = hashPassword(password);
-  
-  if(!Object.is(phone, null)) 
+
+  if(!Object.is(phone, null))
     phone = AESData(phone);
-   
+
   try {
     const checkExisted = await pool.query(
       `SELECT * FROM users WHERE email = '${email}'`,
@@ -32,8 +33,8 @@ export const signup = async (req, res) => {
 }
 //đã sửa
 export const signin = async (req, res) => {
-  // let data = '123456' ;  
-  // let encr = AESData(data); 
+  // let data = '123456' ;
+  // let encr = AESData(data);
   // console.log('data: ', data);
   // console.log('encr: ', encr);
   // let decr  = DeAESData(encr);
@@ -42,14 +43,40 @@ export const signin = async (req, res) => {
   let { email, password } = req.body;
   password = hashPassword(password);
   try {
-    const checkExisted = await pool.query(
+    const user = await pool.query(
       `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`,
     )
-    if (checkExisted.rows.length > 0)
-      res.status(200).json({ data: checkExisted.rows[0] })
-    else {
-      res.status(400).json({ message: 'Wrong email or password!' })
+
+    if (user.rows.length === 0) {
+      return res.status(401).send('User does not exist!')
     }
+
+    const accessTokenSecret = process.env.SECRET
+    const accessTokenLife = process.env.TOKEN_LIFE
+
+    const dataForAccessToken = {
+      id: user.rows[0].user_id,
+      username: user.rows[0].username,
+      email: user.rows[0].email,
+    }
+
+    const accessToken = generateToken(
+      dataForAccessToken,
+      accessTokenSecret,
+      accessTokenLife,
+    )
+
+    if (!accessToken) {
+      return res.status(401).send('Signin fail. Please try again!')
+    }
+
+    return res.status(200).json({
+      message: 'Signin successfully.',
+      accessToken,
+      user: user.rows[0],
+    })
+
+
   } catch (error) {
     res.status(500).json({ error })
   }
@@ -123,9 +150,9 @@ export const updateAddress = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error })
   }
-} 
+}
 // Hàm để hash mật khẩu
-function hashPassword(password) { 
+function hashPassword(password) {
   // crypto.randomBytes(16).toString('hex');
   const hashedPassword = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
   return hashedPassword;
@@ -133,14 +160,14 @@ function hashPassword(password) {
 // Hàm AES   sdt và  adress
 function AESData(data) {
   const cipher = crypto.createCipheriv('aes-256-cbc', AESKey, AESIv);
-  let encrypted  = cipher.update(data, 'utf-8', 'hex'); 
-  encrypted += cipher.final('hex'); 
+  let encrypted  = cipher.update(data, 'utf-8', 'hex');
+  encrypted += cipher.final('hex');
   return encrypted;
 }
 // demo  decrypt
 function DeAESData(encr) {
   const decipher = crypto.createDecipheriv('aes-256-cbc', AESKey, AESIv);
-  let decrypted   = decipher.update(encr, 'hex', 'utf-8'); 
-  decrypted  += decipher.final('utf-8'); 
+  let decrypted   = decipher.update(encr, 'hex', 'utf-8');
+  decrypted  += decipher.final('utf-8');
   return decrypted ;
 }
