@@ -55,9 +55,10 @@ export const signin = async (req, res) => {
     const accessTokenLife = process.env.TOKEN_LIFE
 
     const dataForAccessToken = {
-      id: user.rows[0].user_id,
+      user_id: user.rows[0].user_id,
       username: user.rows[0].username,
       email: user.rows[0].email,
+      role: "user"
     }
 
     const accessToken = generateToken(

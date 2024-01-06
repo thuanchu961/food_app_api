@@ -24,8 +24,10 @@ export const signin = async (req, res) => {
     const accessTokenLife = process.env.TOKEN_LIFE
 
     const dataForAccessToken = {
-      id: admin.rows[0].admin_id,
+      admin_id: admin.rows[0].admin_id,
       username: admin.rows[0].username,
+      email: admin.rows[0].email,
+      role: "admin"
     }
 
     const accessToken = generateToken(
@@ -58,21 +60,24 @@ export const signin = async (req, res) => {
 }
 
 export const signup = async (req, res) => {
-    const { username, password, email, fullname } = req.body
+    let { username, password, email, fullname } = req.body;
+
     try {
       const checkExisted = await pool.query(
         `SELECT * FROM admins WHERE email = '${email}'`,
-      )
+      );
+
       if (checkExisted.rows.length > 0)
-        res.status(400).json({ message: 'Email existed!' })
+        res.status(400).json({ message: 'Email existed!' });
       else {
         await pool.query(
           `INSERT INTO admins (username, password, email, fullname)
           VALUES ('${username}', '${password}', '${email}', '${fullname}')`,
-        )
-        res.status(200).json({ message: 'Signup successfully' })
+        );
+
+        res.status(200).json({ message: 'Signup successfully' });
       }
     } catch (error) {
-      res.status(500).json({ error })
+      res.status(500).json({ error });
     }
-  }
+  };
