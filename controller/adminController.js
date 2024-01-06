@@ -4,21 +4,21 @@ import { decodeToken, generateToken } from '../auth/authMethod.js'
 import randToken from 'rand-token'
 
 export const signin = async (req, res) => {
-    const { username, password } = req.body
+    let { username, password } = req.body
   try {
     const admin = await pool.query(
-      `SELECT * FROM admins WHERE username = '${username}'`,
+      `SELECT * FROM admins WHERE username = '${username}' AND password= '${password}'`,
     )
 
-    if (admin.rows.length === 0) {
+    if (admin.rows.length == 0) {
       return res.status(401).send('User does not exist!')
     }
 
-    const isPasswordValid = bcrypt.compareSync(password, admin.rows[0].password)
+    // const isPasswordValid = bcrypt.compareSync(password, admin.rows[0].password)
 
-    if (!isPasswordValid) {
-      return res.status(401).send('Wrong username or password!')
-    }
+    // if (!isPasswordValid) {
+    //   return res.status(401).send('Wrong username or password!')
+    // }
 
     const accessTokenSecret = process.env.SECRET
     const accessTokenLife = process.env.TOKEN_LIFE
@@ -43,7 +43,7 @@ export const signin = async (req, res) => {
     return res.status(200).json({
       message: 'Signin successfully.',
       accessToken,
-      admin: { id: admin.rows[0].admin_id, username: admin.rows[0].username },
+      admin: { admin_id: admin.rows[0].admin_id, username: admin.rows[0].username },
     })
 
     // const checkExisted = await pool.query(
