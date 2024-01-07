@@ -113,7 +113,7 @@ export const updateUser = async (req, res) => {
     address = AESData(address);
 
   if(!Object.is(phone, null))
-    address = AESData(phone);
+    phone = AESData(phone);
  
   try {
     const result = await pool.query(
